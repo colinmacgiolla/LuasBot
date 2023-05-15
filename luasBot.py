@@ -7,7 +7,12 @@ from bs4 import BeautifulSoup
 from mastodon import Mastodon
 
 
+DEBUG = True
+
+
 def main():
+    
+    global DEBUG
     
     URL = "https://luas.ie/travel-updates/"
     page = requests.get(URL)
@@ -37,9 +42,11 @@ def main():
                 break
             #print(f"{sentence.strip()}. ", end="")
             toot.append(f"{sentence.strip()}. ")
-            
-    toot.append("\n\n\n")
-    toot.append("#Luas #Dublin #MastaDaoine")
+    
+    if not DEBUG:
+        # Avoid spamming people subscribing to tags while I'm testing
+        toot.append("\n\n")
+        toot.append("#Luas #Dublin #MastaDaoine")
             
     #print("\n")
     
