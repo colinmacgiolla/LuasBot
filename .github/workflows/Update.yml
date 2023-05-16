@@ -29,3 +29,6 @@ jobs:
           git add .
           git commit -m "crongenerated"
           git push
+        env:
+          mastodon_token: ${{ secrets.MASTODON_TOKEN }}
+          
