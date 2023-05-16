@@ -2,7 +2,7 @@ name: Update
 
 on:
   schedule:
-    - cron: "30 11 * * *"    #runs at 11:30 UTC everyday
+    - cron: "*/10 * * * *"    #runs every 10 mins
   workflow_dispatch:
 
 jobs:
