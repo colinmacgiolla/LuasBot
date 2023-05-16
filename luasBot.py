@@ -65,7 +65,7 @@ def main():
         # Avoid spamming people subscribing to tags while I'm testing
         toot.append("\n")
         toot.append("\n")
-        toot.append("#Luas #Dublin #MastaDaoine")
+        toot.append("#Luas #Dublin #MastoDaoine")
 
     logging.debug("Toot prepared: \n%s" % toot)
 
