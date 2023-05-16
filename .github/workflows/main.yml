@@ -1,0 +1,30 @@
+name: Update
+
+on:
+  schedule:
+    - cron: "30 11 * * *"    #runs at 11:30 UTC everyday
+
+jobs:
+  getDataAndPost:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v3 # checkout the repository content to github runner.
+        
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10 #install the python needed
+          
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          
+      - name: execute script
+        run: |
+          python luasBot.py
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "crongenerated"
+          git push
