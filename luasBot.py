@@ -47,9 +47,9 @@ def main():
         if "Red" in line or "Green" in line:
             luas_update.append( unicodedata.normalize("NFKD", line) )
 
-    toot = ["Luas update at: %s.\n" % timestamp, "\n"]
-    #print(f"Luas update at {timestamp}\n")
-
+    header = ["Luas update at: %s.\n" % timestamp, "\n"]
+    toot = []
+    
     for line in luas_update:
         for sentence in line.split("."):
             if "Kind Regards" in sentence:
@@ -77,9 +77,10 @@ def main():
                 logging.info("No update found")
                 return
 
-
     with open("toot.text", "w") as f:
         f.writelines(toot)
+        
+    toot[:0] = header
 
     if POST:
         logging.info("Posting to Mastodon")
