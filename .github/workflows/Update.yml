@@ -27,9 +27,11 @@ jobs:
           python luasBot.py
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add .
-          git commit -m "crongenerated"
-          git push
+          git add -A
+          if ! git diff-index --quiet HEAD; then
+             git commit -m "Cron-Generated"
+             git push
+          fi
         env:
           mastodon_token: ${{ secrets.MASTODON_TOKEN }}
           
