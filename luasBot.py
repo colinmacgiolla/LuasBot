@@ -63,7 +63,8 @@ def main():
 
     if not DEBUG:
         # Avoid spamming people subscribing to tags while I'm testing
-        toot.append("\n")
+        temp = toot[-1]
+        toot[-1] = temp+"\n"
         toot.append("\n")
         toot.append("#Luas #Dublin #MastoDaoine")
 
