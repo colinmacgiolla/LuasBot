@@ -12,7 +12,10 @@ jobs:
     steps:
       - name: checkout repo content
         uses: actions/checkout@v3 # checkout the repository content to github runner.
-        
+
+      - name: restore timestamps
+        uses: chetan/git-restore-mtime-action@v2
+
       - name: setup python
         uses: actions/setup-python@v4
         with:
