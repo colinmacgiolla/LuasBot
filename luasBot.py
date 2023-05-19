@@ -70,6 +70,13 @@ def main():
 
     logging.debug("Toot prepared: \n%s" % toot)
 
+    # Normalise newlines, etc.
+    with open("temp_file", "w") as f:
+        f.writelines(toot)
+    with open("temp_file", "r") as f:
+        toot = f.readlines()
+    os.remove("temp_file")
+
 
     if os.path.exists("toot.text"):
         with open("toot.text", "r") as f:
