@@ -2,13 +2,17 @@
 
 
 import requests, unicodedata
-import os
+import os, time
 from bs4 import BeautifulSoup
 from mastodon import Mastodon
 import logging
 
 DEBUG = False
 POST = True
+
+def file_age(filepath):
+    '''Return the age of a file in seconds'''
+    return time.time() - os.path.getmtime(filepath)
 
 def main():
 
@@ -59,7 +63,7 @@ def main():
                 temp = toot[-1]
                 toot[-1] = temp+"\n"
 
-            toot.append(f"{sentence.strip()}.")
+            toot.append(f"{sentence.strip()}. ")
 
     if not DEBUG:
         # Avoid spamming people subscribing to tags while I'm testing
