@@ -2,7 +2,7 @@
 
 
 import requests, unicodedata
-import os, time
+import os, time, datetime
 from bs4 import BeautifulSoup
 from mastodon import Mastodon
 import logging
@@ -86,8 +86,14 @@ def main():
         with open("toot.text", "r") as f:
             old_toot = f.readlines()
             if old_toot == toot:
-                logging.info("No update found")
-                return
+                if (file_age("toot.text") > 86400 
+                    and datetime.datetime.now().hour == 9
+                    and datetime.datetime.now().minute < 10
+                ):
+                    logging.info("No update, but doing daily post")
+                else:
+                    logging.info("No update found")
+                    return
 
     with open("toot.text", "w") as f:
         f.writelines(toot)
