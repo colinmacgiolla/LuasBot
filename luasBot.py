@@ -55,13 +55,16 @@ def main():
     toot = []
     
     for line in luas_update:
-        for sentence in line.split("."):
+        for index, sentence in enumerate(line.split(".")):
             if "Kind Regards" in sentence:
                 break
 
             if "Green" in sentence or "lift" in sentence:
-                temp = toot[-1]
-                toot[-1] = temp+"\n"
+                if index > 0:
+                    temp = toot[-1]
+                    toot[-1] = temp+"\n"
+                else:
+                    pass
 
             toot.append(f"{sentence.strip()}. ")
 
