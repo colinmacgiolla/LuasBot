@@ -6,6 +6,7 @@ import os, time, datetime
 from bs4 import BeautifulSoup
 from mastodon import Mastodon
 import logging
+from copy import deepcopy
 
 DEBUG = False
 POST = True
@@ -96,12 +97,28 @@ def main():
                     logging.info("No update, but doing daily post")
                 else:
                     logging.info("No update found")
-                    return
+                    #return
 
     with open("toot.text", "w") as f:
         f.writelines(toot)
         
     toot[:0] = header
+
+    # Quick fix to handle updates with more than 500 characters
+    if sum(len(i) for i in toot) > 500:
+        temp = []
+        long_output = []
+        for entry in toot:
+            if sum(len(i) for i in temp) < 500 and sum(len(i) for i in temp) + len(entry) < 500:
+                temp.append(entry)
+            else:
+                long_output.append(deepcopy(temp))
+                temp.clear()
+                temp.append(entry)
+        # Handle the stragglers
+        if len(temp) > 0:
+            long_output.append(deepcopy(temp))
+                
 
     if POST:
         logging.info("Posting to Mastodon")
@@ -110,7 +127,14 @@ def main():
             api_base_url="https://botsin.space/"
         )
         try:
-            mastodon.status_post(''.join(toot) )
+            if 'long_output' in locals():
+                response = mastodon.status_post(''.join(long_output[0]))
+                # Each subsequent reply, is a reply to the previous toot
+                for entry in long_output[1:]:
+                    response = mastodon.status_post(''.join(entry),in_reply_to_id=response['id'])
+
+            else:
+                mastodon.status_post(''.join(toot) )
         except Exception as e:
             logging.error(e)
             return -1
