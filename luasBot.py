@@ -97,7 +97,7 @@ def main():
                     logging.info("No update, but doing daily post")
                 else:
                     logging.info("No update found")
-                    #return
+                    return
 
     with open("toot.text", "w") as f:
         f.writelines(toot)
