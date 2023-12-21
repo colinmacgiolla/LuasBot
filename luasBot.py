@@ -7,13 +7,39 @@ from bs4 import BeautifulSoup
 from mastodon import Mastodon
 import logging
 from copy import deepcopy
+import re
 
-DEBUG = False
+DEBUG = True
 POST = True
 
 def file_age(filepath):
     '''Return the age of a file in seconds'''
     return time.time() - os.path.getmtime(filepath)
+
+
+def split_long_lines(strings, max_length=450):
+    result = []
+
+    for string in strings:
+        if len(string) > max_length:
+            sentences = re.split(r'(?<=[.!?])\s+', string)
+            current_line = sentences[0]
+
+            for sentence in sentences[1:]:
+                if len(current_line) + len(sentence) <= max_length:
+                    current_line += ' ' + sentence
+                else:
+                    result.append(current_line)
+                    current_line = sentence
+
+            if current_line:
+                result.append(current_line)
+        else:
+            result.append(string)
+
+    return result
+
+
 
 def main():
 
@@ -81,7 +107,7 @@ def main():
     # Normalise newlines, etc.
     with open("temp_file", "w") as f:
         f.writelines(toot)
-    with open("temp_file", "r") as f:
+    with open("temp_file", "r", encoding="utf-8") as f:
         toot = f.readlines()
     os.remove("temp_file")
 
@@ -97,7 +123,8 @@ def main():
                     logging.info("No update, but doing daily post")
                 else:
                     logging.info("No update found")
-                    return
+                    if not DEBUG:
+                        return
 
     with open("toot.text", "w") as f:
         f.writelines(toot)
@@ -106,18 +133,8 @@ def main():
 
     # Quick fix to handle updates with more than 500 characters
     if sum(len(i) for i in toot) > 500:
-        temp = []
-        long_output = []
-        for entry in toot:
-            if sum(len(i) for i in temp) < 500 and sum(len(i) for i in temp) + len(entry) < 500:
-                temp.append(entry)
-            else:
-                long_output.append(deepcopy(temp))
-                temp.clear()
-                temp.append(entry)
-        # Handle the stragglers
-        if len(temp) > 0:
-            long_output.append(deepcopy(temp))
+        long_output = split_long_lines(toot)
+
                 
 
     if POST:
@@ -131,7 +148,8 @@ def main():
                 response = mastodon.status_post(''.join(long_output[0]))
                 # Each subsequent reply, is a reply to the previous toot
                 for entry in long_output[1:]:
-                    response = mastodon.status_post(''.join(entry),in_reply_to_id=response['id'])
+                    if len(entry) > 1:
+                        response = mastodon.status_post(''.join(entry),in_reply_to_id=response['id'])
 
             else:
                 mastodon.status_post(''.join(toot) )
