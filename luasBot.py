@@ -9,7 +9,7 @@ import logging
 from copy import deepcopy
 import re
 
-DEBUG = True
+DEBUG = False
 POST = True
 
 def file_age(filepath):
