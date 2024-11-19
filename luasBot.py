@@ -22,7 +22,7 @@ def split_long_lines(strings, max_length=450):
 
     for string in strings:
         if len(string) > max_length:
-            sentences = re.split(r'(?<=[.!?])\s+', string)
+            sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', string)
             current_line = sentences[0]
 
             for sentence in sentences[1:]:
