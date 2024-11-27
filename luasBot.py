@@ -141,7 +141,7 @@ def main():
         logging.info("Posting to Mastodon")
         mastodon = Mastodon(
             access_token=os.environ.get('mastodon_token'),
-            api_base_url="https://botsin.space/"
+            api_base_url="https://mastodon.ie/"
         )
         try:
             if 'long_output' in locals():
