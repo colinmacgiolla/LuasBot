@@ -100,7 +100,7 @@ def main():
         temp = toot[-1]
         toot[-1] = temp+"\n"
         toot.append("\n")
-        toot.append("#Luas #Dublin #MastoDaoine")
+        toot.append("#Luas #Dublin")
 
     logging.debug("Toot prepared: \n%s" % toot)
 
