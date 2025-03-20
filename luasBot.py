@@ -8,6 +8,7 @@ from mastodon import Mastodon
 import logging
 from copy import deepcopy
 import re
+import cloudscraper
 
 DEBUG = False
 POST = True
@@ -57,20 +58,21 @@ def main():
 
     logging.info("Scraping luas.ie website")
     URL = "https://luas.ie/travel-updates/"
+    scraper = cloudscraper.create_scraper()
     try:
-        page = requests.get(URL)
+        page = scraper.get(URL)
     except Exception as e:
         logging.error(e)
         return -1
 
     soup = BeautifulSoup(page.content, "html.parser")
-    results = soup.find_all("div", class_="page-content")
+    results = soup.find_all("article")
 
     data = results[0].text.split("\n")
 
     logging.debug("Extracted the following data:\n%s" % data)
     # timestamp = next(datefinder.find_dates(results[0].text))
-    timestamp = data[5]
+    timestamp = data[1]
     logging.info("Timestamp from post is: %s" % timestamp)
 
     luas_update = []
