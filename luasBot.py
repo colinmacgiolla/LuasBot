@@ -20,26 +20,24 @@ def file_age(filepath):
 
 def split_long_lines(strings, max_length=450):
     result = []
+    temp = ""
 
     for string in strings:
-        if len(string) > max_length:
-            sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', string)
-            current_line = sentences[0]
-
-            for sentence in sentences[1:]:
-                if len(current_line) + len(sentence) <= max_length:
-                    current_line += ' ' + sentence
-                else:
-                    result.append(current_line)
-                    current_line = sentence
-
-            if current_line:
-                result.append(current_line)
+        if len(string) + len(temp) < max_length:
+            temp = temp + string
         else:
-            result.append(string)
-
+            sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', string)
+            for sentence in sentences:
+                if len(sentence) + len(temp) < max_length:
+                    temp = temp + ' ' + sentence
+                else:
+                    result.append(deepcopy(temp))
+                    temp = deepcopy(sentence)
+    if len(temp) > 0:
+        result.append(deepcopy(temp))
+        
     return result
-
+            
 
 
 def main():
