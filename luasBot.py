@@ -56,7 +56,7 @@ def main():
 
     logging.info("Scraping luas.ie website")
     URL = "https://luas.ie/travel-updates/"
-    scraper = cloudscraper.create_scraper()
+    scraper = cloudscraper.create_scraper(browser={'browser': 'firefox','platform': 'linux'})
     try:
         page = scraper.get(URL)
     except Exception as e:
