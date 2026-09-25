@@ -2,3 +2,4 @@
 .vscode/
 *.log
 *.tmp
+__pycache__/
